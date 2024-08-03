@@ -42,7 +42,7 @@ public class DatabaseConnection {
     }
 
     // Method To Fetch Advertisements From The Database
-    public List<Advertisement> fetchAdvertisements() throws SQLException {
+    public static List<Advertisement> fetchAdvertisements() throws SQLException {
         List<Advertisement> ads = new ArrayList<>();
         String query = "SELECT * FROM advertisements";
         Connection connection = null;
@@ -75,7 +75,7 @@ public class DatabaseConnection {
     }
 
     // Method To Disconnect The Database Connection
-    public void disconnect(Connection connection) throws SQLException {
+    public static void disconnect(Connection connection) throws SQLException {
         if (connection != null && !connection.isClosed()) {
             connection.close();
         }

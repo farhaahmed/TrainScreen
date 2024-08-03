@@ -12,7 +12,7 @@
 	<classpathentry kind="src" path="TrainScreenApplicationTest"/>
 	<classpathentry kind="src" path="WeatherTest"/>
 	<classpathentry kind="src" path="NewsTest"/>
-	<classpathentry kind="lib" path="C:/Users/soumm/OneDrive/Desktop/mysql-connector-j-9.0.0/mysql-connector-j-9.0.0/mysql-connector-j-9.0.0.jar">
+	<classpathentry kind="lib" path="/Users/farhaahmed/Downloads/mysql-connector-j-9.0.0/mysql-connector-j-9.0.0.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
