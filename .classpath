@@ -6,5 +6,16 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="TrainScreenApplication/src"/>
+	<classpathentry kind="src" path="Weather/src"/>
+	<classpathentry kind="src" path="News/src"/>
+	<classpathentry kind="src" path="TrainScreenApplicationTest"/>
+	<classpathentry kind="src" path="WeatherTest"/>
+	<classpathentry kind="src" path="NewsTest"/>
+	<classpathentry kind="lib" path="C:/Users/soumm/OneDrive/Desktop/mysql-connector-j-9.0.0/mysql-connector-j-9.0.0/mysql-connector-j-9.0.0.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
