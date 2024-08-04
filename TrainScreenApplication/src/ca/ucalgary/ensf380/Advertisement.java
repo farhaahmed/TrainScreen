@@ -5,8 +5,15 @@ public class Advertisement {
 	private int id; //Unique identifier for the ad
     private String adName; //Name of ad
     private String adType; //Type of ad (PDF, MPG, JPEG, BMP)
-    private byte[] adFile; //Binary content of the ad file
+    private String adFile; //file name in String
 
+    Advertisement(int id, String adName, String adType, String adFile) {
+    	this.setAdFile(adFile);
+    	this.setAdName(adName);
+    	this.setAdType(adType);
+    	this.setId(id);
+    }
+    
     //Getter method for the 'id' property
     public int getId() {
         return id; //Returns value of id
@@ -33,11 +40,11 @@ public class Advertisement {
         this.adType = adType;
     }
 
-    public byte[] getAdFile() {
+    public String getAdFile() {
         return adFile; //Returns value of 'adFile' as a byte array
     }
 
-    public void setAdFile(byte[] adFile) {
+    public void setAdFile(String adFile) {
         this.adFile = adFile; // Sets value of 'adFile' as a byte array
     }
 }
