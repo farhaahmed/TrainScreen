@@ -33,7 +33,7 @@ public class AdvertisementManager {
     }
 
     // Method to display the next advertisement
-    private void displayNextAd() {
+    void displayNextAd() {
         Advertisement ad = ads.get(currentAdIndex); // Get the current advertisement based on the current index
         // Implement logic to display the advertisement (e.g., update UI component)
         currentAdIndex = (currentAdIndex + 1) % ads.size(); // Increment the index and wrap around if it exceeds the list size
@@ -49,4 +49,9 @@ public class AdvertisementManager {
             }
         }, 0, 10000); // Schedule task with initial delay of 0 ms and repeat every 10,000 ms (10 seconds)
     }
+
+	public List<Advertisement> getAdvertisement() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

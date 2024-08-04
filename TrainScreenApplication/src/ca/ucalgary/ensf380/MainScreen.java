@@ -12,6 +12,7 @@ public class MainScreen {
     private WeatherFetcher weatherFetcher; // Fetcher for weather data
     private NewsFetcher newsFetcher; // Fetcher for news data
     private ScheduleTaskManager scheduleTaskManager; // Manager for scheduling tasks
+    private AdvertisementDisplay adDisplay; // Display for advertisements
 
     // Constructor to initialize the MainScreen class
     public MainScreen() {
@@ -28,6 +29,7 @@ public class MainScreen {
         weatherFetcher = new WeatherFetcher();
         newsFetcher = new NewsFetcher();
         scheduleTaskManager = new ScheduleTaskManager(adManager, trainDataFetcher, weatherFetcher, newsFetcher);
+        adDisplay = new AdvertisementDisplay(adManager); // Initialize the AdvertisementDisplay
 
         // Initialize the screen components
         initializeScreen();
@@ -37,11 +39,8 @@ public class MainScreen {
 
     // Method to initialize the screen components
     private void initializeScreen() {
-        // Create a panel for advertisements
-        JPanel adPanel = new JPanel();
-        adPanel.setPreferredSize(new Dimension(600, 400));
-        adPanel.setBackground(Color.BLACK);
-        frame.add(adPanel, BorderLayout.CENTER);
+        // Add the AdvertisementDisplay panel for advertisements
+        frame.add(adDisplay, BorderLayout.CENTER);
 
         // Create a panel for weather information
         JPanel weatherPanel = new JPanel();
@@ -60,9 +59,6 @@ public class MainScreen {
 
         // Make the frame visible
         frame.setVisible(true);
-
-        // Start rotating advertisements
-        adManager.startAdRotation();
 
         // Display weather information
         displayWeather(weatherPanel);
