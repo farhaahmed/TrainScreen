@@ -8,8 +8,14 @@ import java.util.ArrayList; // For using ArrayList
 import java.util.List; // For using List
 
 public class TrainDataFetcher {
+    private static final String DEFAULT_OUTPUT_FOLDER_PATH = "out"; // Default output folder path
 
     // Method to fetch the latest train data from the CSV file
+    public List<Train> fetchTrainData() {
+        return fetchTrainData(DEFAULT_OUTPUT_FOLDER_PATH);
+    }
+
+    // Method to fetch the latest train data from the CSV file with specified output folder path
     public List<Train> fetchTrainData(String outputFolderPath) {
         List<Train> trains = new ArrayList<>(); // List to store train objects
 

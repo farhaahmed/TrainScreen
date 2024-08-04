@@ -1,116 +1,94 @@
 package ca.ucalgary.ensf380;
 
-import javax.swing.*; // Importing Swing components
-import java.awt.*; // Importing AWT components
-import java.util.List; // Importing List interface
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class MainScreen {
-    private JFrame frame; // Main frame for the application
-    private AdvertisementManager adManager; // Manager for handling advertisements
-    private StationManager stationManager; // Manager for handling station data
-    private TrainDataFetcher trainDataFetcher; // Fetcher for real-time train data
-    private WeatherFetcher weatherFetcher; // Fetcher for weather data
-    private NewsFetcher newsFetcher; // Fetcher for news data
-    private ScheduleTaskManager scheduleTaskManager; // Manager for scheduling tasks
-    private AdvertisementDisplay adDisplay; // Display for advertisements
+public class MainScreen extends JFrame {
+    private ScheduledExecutorService scheduler;
+    private AdvertisementManager adManager;
+    private TrainDataFetcher trainDataFetcher;
+    private WeatherFetcher weatherFetcher;
+    private NewsFetcher newsFetcher;
 
-    // Constructor to initialize the MainScreen class
-    public MainScreen() {
-        // Create the main frame
-        frame = new JFrame("Subway Screen Application");
-        frame.setLayout(new BorderLayout());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
+    public MainScreen(AdvertisementManager adManager, TrainDataFetcher trainDataFetcher, WeatherFetcher weatherFetcher, NewsFetcher newsFetcher) {
+        this.adManager = adManager;
+        this.trainDataFetcher = trainDataFetcher;
+        this.weatherFetcher = weatherFetcher;
+        this.newsFetcher = newsFetcher;
+        scheduler = Executors.newScheduledThreadPool(1);
 
-        // Initialize the managers and fetchers
-        adManager = new AdvertisementManager();
-        stationManager = new StationManager();
-        trainDataFetcher = new TrainDataFetcher();
-        weatherFetcher = new WeatherFetcher();
-        newsFetcher = new NewsFetcher();
-        scheduleTaskManager = new ScheduleTaskManager(adManager, trainDataFetcher, weatherFetcher, newsFetcher);
-        adDisplay = new AdvertisementDisplay(adManager); // Initialize the AdvertisementDisplay
+        setTitle("Main Screen");
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
 
-        // Initialize the screen components
-        initializeScreen();
-        // Start scheduling tasks
-        scheduleTaskManager.start();
-    }
-
-    // Method to initialize the screen components
-    private void initializeScreen() {
-        // Add the AdvertisementDisplay panel for advertisements
-        frame.add(adDisplay, BorderLayout.CENTER);
-
-        // Create a panel for weather information
         JPanel weatherPanel = new JPanel();
-        weatherPanel.setPreferredSize(new Dimension(200, 100));
-        frame.add(weatherPanel, BorderLayout.NORTH);
-
-        // Create a panel for news information
         JPanel newsPanel = new JPanel();
-        newsPanel.setPreferredSize(new Dimension(200, 100));
-        frame.add(newsPanel, BorderLayout.SOUTH);
-
-        // Create a panel for train information
         JPanel trainPanel = new JPanel();
-        trainPanel.setPreferredSize(new Dimension(200, 300));
-        frame.add(trainPanel, BorderLayout.EAST);
+        
+        add(weatherPanel, BorderLayout.NORTH);
+        add(newsPanel, BorderLayout.CENTER);
+        add(trainPanel, BorderLayout.SOUTH);
 
-        // Make the frame visible
-        frame.setVisible(true);
+        scheduler.scheduleAtFixedRate(() -> displayWeather(weatherPanel), 0, 1, TimeUnit.HOURS);
+        scheduler.scheduleAtFixedRate(() -> displayNews(newsPanel), 0, 15, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(() -> displayTrainInfo(trainPanel), 0, 15, TimeUnit.SECONDS);
 
-        // Display weather information
-        displayWeather(weatherPanel);
-        // Display news information
-        displayNews(newsPanel);
-        // Display train information
-        displayTrainInfo(trainPanel, "out"); // Specify the output folder path for the train data
+        setVisible(true);
     }
 
-    // Method to display weather information
     private void displayWeather(JPanel weatherPanel) {
         try {
-            // Fetch weather data for Calgary, CA
-            String weatherData = WeatherFetcher.fetchWeather("Calgary", "CA");
-            // Create a label with the weather data
+            String weatherData = weatherFetcher.fetchWeather("Calgary", "CA");
             JLabel weatherLabel = new JLabel(weatherData);
-            // Add the weather label to the weather panel
+            weatherPanel.removeAll();
             weatherPanel.add(weatherLabel);
+            weatherPanel.revalidate();
+            weatherPanel.repaint();
         } catch (Exception e) {
-            // Print stack trace if an exception occurs
             e.printStackTrace();
         }
     }
 
-    // Method to display news information
     private void displayNews(JPanel newsPanel) {
-        // Fetch news data with a keyword filter
-        String newsData = newsFetcher.fetchNews("keyword");
-        // Create a label with the news data
-        JLabel newsLabel = new JLabel("<html>" + newsData.replace("\n", "<br>") + "</html>");
-        // Add the news label to the news panel
-        newsPanel.add(newsLabel);
-    }
-
-    // Method to display train information
-    private void displayTrainInfo(JPanel trainPanel, String outputFolderPath) {
-        // Fetch the train data
-        List<Train> trains = trainDataFetcher.fetchTrainData(outputFolderPath);
-        // Assuming we display the first train's information for simplicity
-        if (!trains.isEmpty()) {
-            Train train = trains.get(0); // Get the first train from the list
-            // Create a label with the train information
-            JLabel trainLabel = new JLabel("Train ID: " + train.getTrainId() + ", Line: " + train.getLine() +
-                    ", Current Station: " + train.getCurrentStation() + ", Direction: " + train.getDirection() +
-                    ", Speed: " + train.getSpeed() + " km/h");
-            // Add the train label to the train panel
-            trainPanel.add(trainLabel);
+        try {
+            String newsData = newsFetcher.fetchNews();
+            JLabel newsLabel = new JLabel("<html>" + newsData.replaceAll("\n", "<br>") + "</html>");
+            newsPanel.removeAll();
+            newsPanel.add(newsLabel);
+            newsPanel.revalidate();
+            newsPanel.repaint();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    // Main method to run the application
+    private void displayTrainInfo(JPanel trainPanel) {
+        try {
+            List<Train> trains = trainDataFetcher.fetchTrainData();
+            if (!trains.isEmpty()) {
+                Train train = trains.get(0);
+                String trainInfo = "Train ID: " + train.getTrainId() + ", Current Station: " + train.getCurrentStation() + ", Speed: " + train.getSpeed() + " km/h";
+                JLabel trainLabel = new JLabel(trainInfo);
+                trainPanel.removeAll();
+                trainPanel.add(trainLabel);
+                trainPanel.revalidate();
+                trainPanel.repaint();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
-        new MainScreen(); // Create an instance of MainScreen
+        AdvertisementManager adManager = new AdvertisementManager();
+        TrainDataFetcher trainDataFetcher = new TrainDataFetcher();
+        WeatherFetcher weatherFetcher = new WeatherFetcher();
+        NewsFetcher newsFetcher = new NewsFetcher();
+        new MainScreen(adManager, trainDataFetcher, weatherFetcher, newsFetcher);
     }
 }

@@ -32,7 +32,7 @@ public class ScheduleTaskManager {
 
         // Schedule weather data fetching every hour
         scheduler.scheduleAtFixedRate(() -> {
-            weatherFetcher.fetchWeatherData("cityCode");
+            weatherFetcher.fetchWeather("cityCode", "countryCode");
         }, 0, 1, TimeUnit.HOURS);
 
         // Schedule news data fetching every 15 minutes
