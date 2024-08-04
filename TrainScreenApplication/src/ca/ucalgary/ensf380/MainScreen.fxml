@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.media.MediaView?>
+
+<AnchorPane id=".WeatherSectionPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.ucalgary.ensf380.MainController">
+   <children>
+      <Pane fx:id="WeatherSectionPane" layoutX="395.0" prefHeight="279.0" prefWidth="205.0" styleClass="WeatherSection">
+         <children>
+            <Label layoutX="51.0" layoutY="14.0" text="Today's Weather" />
+         </children>
+      </Pane>
+      <Pane fx:id="MapSectionPane" prefHeight="279.0" prefWidth="396.0">
+         <children>
+            <ImageView fx:id="imageView" fitHeight="279.0" fitWidth="396.0" pickOnBounds="true" preserveRatio="false" />
+            <MediaView fx:id="mediaView" fitHeight="279.0" fitWidth="396.0" preserveRatio="false" />
+         </children></Pane>
+      <Pane fx:id="StationPane" layoutY="279.0" prefHeight="70.0" prefWidth="600.0">
+         <children>
+            <Label layoutX="249.0" layoutY="26.0" text="Station Placeholder" />
+         </children>
+      </Pane>
+      <Pane fx:id="NewsSectionPane" layoutY="351.0" prefHeight="50.0" prefWidth="600.0">
+         <children>
+            <Label layoutX="254.0" layoutY="16.0" text="News Placeholder" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
