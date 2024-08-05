@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class WeatherFetcherTest {
 	@Test
 	public void testSuccessfulFetch() {
-		try {
+		try {//successful run parse and stores data scraped from wttr.in
 			ArrayList<String> testData = WeatherFetcher.fetchWeather("Calgary", "CA");
 			assertFalse("method should not return empty arraylist: ", testData.isEmpty());
 			assertNotNull("ArrayList should not simply be null entries.", testData);
