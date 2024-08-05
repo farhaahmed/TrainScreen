@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.Canvas;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -17,7 +19,8 @@ public class MainScreen {
     private static ArrayList<String> weatherData;
     private static String cityName;
     private static String countryName;
-    private NewsFetcher newsFetcher;
+    private static String newsData;
+    private static String newsKeyword;
     private Canvas mapCanvas;
     private List<StationCoordinate> stationCoordinates;
 
@@ -50,6 +53,7 @@ public class MainScreen {
     	if (args.length != 0) {
     		cityName = args[0];
     		countryName = args[1];
+    		newsKeyword = args[2];
     	}//TODO close program if no args provided for weather and current train
     	
     	//initializes components from the event dispatch thread
@@ -131,9 +135,28 @@ public class MainScreen {
             frame.add(trainPanel, gbc);
             
             //News Section
+            try {
+         	   newsData = NewsFetcher.fetchNews(newsKeyword);
+            } catch(Exception e) {
+         	   System.out.println(e.getMessage());
+            }
+         // 
+            //label to display the headlines
+            JTextArea newsLabel = new JTextArea(newsData);
+            newsLabel.setEditable(false);
+            newsLabel.setLineWrap(false);
+            newsLabel.setWrapStyleWord(true);
+            newsLabel.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+            
+            //JScrollPane to hold the label
+            JScrollPane scrollPane = new JScrollPane(newsLabel);
+            
+            //JPanel to hold the scrollPane (since we are in gridbaglayout)
             JPanel newsPanel = new JPanel();
-            JLabel newsLabel = new JLabel("News Section");
-            newsPanel.add(newsLabel);
+            newsPanel.add(scrollPane);
+            
+            
+            //add Pane to the JFrame
             gbc.gridx = 0;
             gbc.gridy = 5;
             gbc.gridwidth = 3;
@@ -143,8 +166,8 @@ public class MainScreen {
             gbc.weighty = 0.15;
             frame.add(newsPanel, gbc);
             
-           
-    	});
+            //Timer to scroll automatically
+            
+        });    	
     }
-    
 }

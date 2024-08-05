@@ -51,7 +51,7 @@ public class NewsFetcher {
         	JSONObject article = articles.getJSONObject(i);
         	String headline = article.getString("title");
         	if (headline.contains(keyword)) {
-        		headlineContents.append("	" + headline);
+        		headlineContents.append("     " + headline);
         	}
         }
         
