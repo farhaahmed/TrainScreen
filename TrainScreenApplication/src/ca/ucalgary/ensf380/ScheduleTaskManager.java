@@ -8,13 +8,11 @@ public class ScheduleTaskManager {
     private ScheduledExecutorService scheduler;
     private AdvertisementManager adManager;
     private TrainDataFetcher trainDataFetcher;
-    private WeatherFetcher weatherFetcher;
     private NewsFetcher newsFetcher;
 
     public ScheduleTaskManager(AdvertisementManager adManager, TrainDataFetcher trainDataFetcher, WeatherFetcher weatherFetcher, NewsFetcher newsFetcher) {
         this.adManager = adManager;
         this.trainDataFetcher = trainDataFetcher;
-        this.weatherFetcher = weatherFetcher;
         this.newsFetcher = newsFetcher;
         scheduler = Executors.newScheduledThreadPool(1);
     }
@@ -23,7 +21,7 @@ public class ScheduleTaskManager {
         scheduler.scheduleAtFixedRate(() -> adManager.displayNextAd(), 0, 10, TimeUnit.SECONDS);
         scheduler.scheduleAtFixedRate(() -> {
             try {
-                weatherFetcher.fetchWeather("Calgary", "CA");
+                WeatherFetcher.fetchWeather("Calgary", "CA");
             } catch (Exception e) {
                 e.printStackTrace();
             }
