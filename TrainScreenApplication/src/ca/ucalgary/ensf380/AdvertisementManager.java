@@ -30,7 +30,7 @@ public class AdvertisementManager {
                 ad.setId(resultSet.getInt("id"));
                 ad.setAdName(resultSet.getString("ad_name"));
                 ad.setAdType(resultSet.getString("ad_type"));
-                ad.setAdFile(resultSet.getBytes("ad_file"));
+                ad.setAdFile(resultSet.getString("ad_file"));
                 adList.add(ad);
             }
         }

@@ -6,38 +6,40 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class NewsFetcher {
-    private static final String NEWS_URL = "http://newsapi.org/v2/top-headlines?country=ca&apiKey=YOUR_API_KEY"; // Replace YOUR_API_KEY with an actual API key
+    private static final String API_KEY = "a84ec2ca21934fce8029829002e79212"; // Your API key
+    private static final String BASE_URL = "https://newsapi.org/v2/top-headlines?country=ca&apiKey=";
 
     public String fetchNews() throws Exception {
-        URL url = new URL(NEWS_URL);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
+        String completeUrl = BASE_URL + API_KEY;
+        URL urlObject = new URL(completeUrl);
+        HttpURLConnection urlConnection = (HttpURLConnection) urlObject.openConnection();
+        urlConnection.setRequestMethod("GET");
 
-        int responseCode = connection.getResponseCode();
+        int responseCode = urlConnection.getResponseCode();
+
         if (responseCode == 200) { // If response is OK
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
                 String inputLine;
                 StringBuilder content = new StringBuilder();
 
-                // Reading the API response and building the content string
                 while ((inputLine = in.readLine()) != null) {
                     content.append(inputLine);
                 }
 
                 // Parsing the fetched news data and returning it
                 return parseNewsData(content.toString());
-
             } finally {
-                connection.disconnect();
+                urlConnection.disconnect();
             }
         } else {
-            throw new Exception("Error fetching news: " + responseCode);
+            throw new Exception("Error! Cannot Fetch News Data: " + responseCode);
         }
     }
 
+    // Method to parse the news data from the JSON response
     private String parseNewsData(String json) {
-        // For simplicity, return the raw JSON data
-        // You can implement more complex JSON parsing here if needed
+        // Implement the JSON parsing logic here
+        // For simplicity, we can return the raw JSON or you can use a library like org.json or Gson to parse it
         return json;
     }
 }

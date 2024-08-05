@@ -5,13 +5,16 @@ public class Advertisement {
 	private int id; //Unique identifier for the ad
     private String adName; //Name of ad
     private String adType; //Type of ad (PDF, MPG, JPEG, BMP)
-    private String adFile; //file name in String
+    private String adFile; //Binary content of the ad file
 
-    Advertisement(int id, String adName, String adType, String adFile) {
-    	this.setAdFile(adFile);
+    Advertisement() {};
+    
+    // Public Advertisements Other Constructor
+    Advertisement(int id, String anName, String adType, String adFile) {
+    	this.setId(id);
     	this.setAdName(adName);
     	this.setAdType(adType);
-    	this.setId(id);
+    	this.setAdFile(adFile);
     }
     
     //Getter method for the 'id' property
