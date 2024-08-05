@@ -20,7 +20,7 @@ public class AdvertisementManager {
 
     private List<Advertisement> loadAdvertisementsFromDatabase() throws SQLException {
         List<Advertisement> adList = new ArrayList<>();
-        String query = "SELECT * FROM advertisements";
+        String query = "SELECT * FROM advertisements WHERE ad_type=\"JPEG\" OR ad_type=\"BMP\"";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
@@ -37,13 +37,13 @@ public class AdvertisementManager {
         return adList;
     }
 
-    public List<Advertisement> getAdvertisement() {
-        return advertisements;
+    public List<Advertisement> getAdvertisements() {
+    	return advertisements;
     }
 
     public void displayNextAd() {
         // Logic to display the next advertisement
-        // For simplicity, just printing out the ad names in the console
+        // returns fileName of next ad
         for (Advertisement ad : advertisements) {
             System.out.println(ad.getAdName());
         }

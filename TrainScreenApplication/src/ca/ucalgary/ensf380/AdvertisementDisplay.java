@@ -37,7 +37,7 @@ public class AdvertisementDisplay extends JPanel {
 
     // Method to display the next advertisement
     private void displayNextAd() {
-        List<Advertisement> ads = adManager.getAdvertisement(); // Fetch the list of advertisements
+        List<Advertisement> ads = adManager.getAdvertisements(); // Fetch the list of advertisements
         if (ads.isEmpty()) {
             adLabel.setText("No advertisements available."); // Display message if no ads are available
             return;
