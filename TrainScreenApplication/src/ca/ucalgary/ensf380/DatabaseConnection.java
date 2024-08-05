@@ -74,6 +74,39 @@ public class DatabaseConnection {
         return ads;
     }
 
+    // Method To Fetch Map Images From The Database
+    public static List<MapImage> fetchMapImages() throws SQLException {
+        List<MapImage> maps = new ArrayList<>();
+        String query = "SELECT * FROM maps";
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                MapImage map = new MapImage();
+                map.setId(resultSet.getInt("id"));
+                map.setMapType(resultSet.getString("map_type"));
+                map.setFileName(resultSet.getString("file_name"));
+                map.setFilePath(resultSet.getString("file_path"));
+                maps.add(map);
+            }
+        } finally {
+            if (resultSet != null && !resultSet.isClosed()) {
+                resultSet.close();
+            }
+            if (statement != null && !statement.isClosed()) {
+                statement.close();
+            }
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
+        return maps;
+    }
+
     // Method To Disconnect The Database Connection
     public static void disconnect(Connection connection) throws SQLException {
         if (connection != null && !connection.isClosed()) {
