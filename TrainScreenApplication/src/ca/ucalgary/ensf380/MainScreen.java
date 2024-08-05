@@ -14,7 +14,9 @@ public class MainScreen {
     private ScheduledExecutorService scheduler;
     private AdvertisementManager adManager;
     private TrainDataFetcher trainDataFetcher;
-    private WeatherFetcher weatherFetcher;
+    private static ArrayList<String> weatherData;
+    private static String cityName;
+    private static String countryName;
     private NewsFetcher newsFetcher;
     private Canvas mapCanvas;
     private List<StationCoordinate> stationCoordinates;
@@ -45,6 +47,11 @@ public class MainScreen {
     }
     
     public static void main(String[] args) {
+    	if (args.length != 0) {
+    		cityName = args[0];
+    		countryName = args[1];
+    	}//TODO close program if no args provided for weather and current train
+    	
     	//initializes components from the event dispatch thread
     	EventQueue.invokeLater(() -> {
     		JFrame frame = new JFrame("TransitScreen");
@@ -58,6 +65,8 @@ public class MainScreen {
     		JPanel adPanel = new JPanel();
     		JLabel adLabel = new JLabel("");
     		
+    		//image setting
+    		//TODO set interval for map and ads
     		ImageIcon adImage = new ImageIcon("Advertisements/CG_Ad_3.jpg"); //must initialize icon first
     		Image scaledImage = adImage.getImage().getScaledInstance(460, 200, Image.SCALE_SMOOTH);
     		adImage = new ImageIcon(scaledImage);
@@ -75,9 +84,30 @@ public class MainScreen {
             gbc.weighty = 0.5;
             frame.add(adPanel, gbc);
             
+            
+            //call fetcher
+            try {
+				weatherData = WeatherFetcher.fetchWeather(cityName, countryName);
+			} catch (Exception e) {
+				// catch illegalargexception
+				e.printStackTrace();
+			}
+            //seperate into labels
+            JLabel conditions = new JLabel(weatherData.get(0));
+            JLabel tempPlus = new JLabel(weatherData.get(1)+"("+weatherData.get(2)+")");
+            JLabel windPrecipitation = new JLabel(weatherData.get(3)+" km/h"+weatherData.get(4)+" mm");
+            
             JPanel weatherPanel = new JPanel();
-            JLabel weatherLabel = new JLabel("Weather Placeholder");
-            weatherPanel.add(weatherLabel);
+            
+            
+            weatherPanel.setLayout(new BorderLayout());
+            JLabel weatherLabel = new JLabel("Today's Weather");
+            
+            weatherPanel.add(weatherLabel, BorderLayout.PAGE_START);
+            weatherPanel.add(conditions, BorderLayout.LINE_START);
+            weatherPanel.add(tempPlus, BorderLayout.LINE_END);
+            weatherPanel.add(windPrecipitation, BorderLayout.PAGE_END);
+            
             gbc.gridx = 2;
             gbc.gridy = 0;
             gbc.gridwidth = 1;
@@ -112,6 +142,8 @@ public class MainScreen {
             gbc.weightx = 1.0;
             gbc.weighty = 0.15;
             frame.add(newsPanel, gbc);
+            
+           
     	});
     }
     
