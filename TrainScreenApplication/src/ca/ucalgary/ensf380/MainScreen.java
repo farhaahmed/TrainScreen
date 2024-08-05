@@ -1,19 +1,16 @@
 package ca.ucalgary.ensf380;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
-
+import javax.swing.*;
+import java.awt.*;
+import java.awt.Canvas;
+import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class MainScreen extends Application {
+public class MainScreen {
     private ScheduledExecutorService scheduler;
     private AdvertisementManager adManager;
     private TrainDataFetcher trainDataFetcher;
@@ -46,65 +43,68 @@ public class MainScreen extends Application {
             return y;
         }
     }
-
-    @Override
-    public void init() {
-        adManager = new AdvertisementManager();
-        trainDataFetcher = new TrainDataFetcher();
-        weatherFetcher = new WeatherFetcher();
-        newsFetcher = new NewsFetcher();
-        scheduler = Executors.newScheduledThreadPool(1);
-
-        // Initialize station coordinates
-        stationCoordinates = new ArrayList<>();
-        stationCoordinates.add(new StationCoordinate("Station A", 50, 50));
-        stationCoordinates.add(new StationCoordinate("Station B", 150, 150));
-        stationCoordinates.add(new StationCoordinate("Station C", 250, 250));
-        stationCoordinates.add(new StationCoordinate("Station D", 350, 350));
-        // Add more stations as needed
-    }
-
-    private double[] getStationCoordinates(String stationName) {
-        for (StationCoordinate sc : stationCoordinates) {
-            if (sc.getStationName().equals(stationName)) {
-                return new double[]{sc.getX(), sc.getY()};
-            }
-        }
-        return new double[]{0, 0}; // Default coordinates if station not found
-    }
-
-    @Override
-    public void start(Stage primaryStage) {
-        mapCanvas = new Canvas(800, 600);
-        BorderPane root = new BorderPane();
-        root.setCenter(mapCanvas);
-
-        primaryStage.setTitle("Main Screen");
-        primaryStage.setScene(new Scene(root, 800, 600));
-        primaryStage.show();
-
-        scheduler.scheduleAtFixedRate(() -> displayTrainInfo(), 0, 15, TimeUnit.SECONDS);
-    }
-
-    private void displayTrainInfo() {
-        List<Train> trains = trainDataFetcher.fetchTrainData("path/to/outputFolder"); // Adjust the path accordingly
-        if (!trains.isEmpty()) {
-            GraphicsContext gc = mapCanvas.getGraphicsContext2D();
-            gc.clearRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
-
-            for (Train train : trains) {
-                double[] coords = getStationCoordinates(train.getCurrentStation());
-                gc.fillOval(coords[0], coords[1], 10, 10); // Draw train location as a dot
-            }
-        }
-    }
-
-    @Override
-    public void stop() {
-        scheduler.shutdown();
-    }
-
+    
     public static void main(String[] args) {
-        launch(args);
+    	//initializes components from the event dispatch thread
+    	EventQueue.invokeLater(() -> {
+    		JFrame frame = new JFrame("TransitScreen");
+    		frame.setSize(600,400);
+    		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    		frame.setLayout(new GridBagLayout());
+    		frame.setVisible(true);
+    		GridBagConstraints gbc = new GridBagConstraints();
+    		
+    		//ad and map panel
+    		JPanel adPanel = new JPanel();
+    		JLabel adLabel = new JLabel("Ad Placeholder");
+            adPanel.add(adLabel);
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.gridwidth = 2;
+            gbc.gridheight = 2;
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.weightx = 0.75;
+            gbc.weighty = 1.0;
+            frame.add(adPanel, gbc);
+            
+            JPanel weatherPanel = new JPanel();
+            JLabel weatherLabel = new JLabel("Weather Placeholder");
+            weatherPanel.add(weatherLabel);
+            gbc.gridx = 2;
+            gbc.gridy = 0;
+            gbc.gridwidth = 1;
+            gbc.gridheight = 2;
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.weightx = 0.25;
+            gbc.weighty = 1.0;
+            frame.add(weatherPanel, gbc);
+
+            // Train Information
+            JPanel trainPanel = new JPanel();
+            JLabel trainLabel = new JLabel("Train: Tuscany 1 min, 69 St 1 min");
+            trainPanel.add(trainLabel);
+            gbc.gridx = 0;
+            gbc.gridy = 2;
+            gbc.gridwidth = 3;
+            gbc.gridheight = 2;
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.weightx = 1.0;
+            gbc.weighty = 0.25;
+            frame.add(trainPanel, gbc);
+            
+            //News Section
+            JPanel newsPanel = new JPanel();
+            JLabel newsLabel = new JLabel("News: Example headline");
+            newsPanel.add(newsLabel);
+            gbc.gridx = 0;
+            gbc.gridy = 5;
+            gbc.gridwidth = 3;
+            gbc.gridheight = 1;
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.weightx = 1.0;
+            gbc.weighty = 0.15;
+            frame.add(newsPanel, gbc);
+    	});
     }
+    
 }
