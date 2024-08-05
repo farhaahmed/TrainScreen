@@ -12,7 +12,7 @@ public class NewsFetcher {
     private static final String API_KEY = "a84ec2ca21934fce8029829002e79212"; //Our API key
     private static final String BASE_URL = "https://newsapi.org/v2/top-headlines?country=ca&apiKey=";
 
-    public static String fetchNews() throws Exception {
+    public static String fetchNews(String keyword) throws Exception {
         String completeUrl = BASE_URL + API_KEY;
         URL urlObject = new URL(completeUrl);
         HttpURLConnection urlConnection = (HttpURLConnection) urlObject.openConnection();
@@ -30,7 +30,7 @@ public class NewsFetcher {
                 }
 
                 // Parsing the fetched news data and returning it
-                return parseNewsData(content.toString());
+                return parseNewsData(content.toString(), keyword);
             } finally {
                 urlConnection.disconnect();
             }
@@ -40,7 +40,7 @@ public class NewsFetcher {
     }
 
     // Method to parse the news data from the JSON response
-    private static String parseNewsData(String json) throws JSONException {
+    private static String parseNewsData(String json, String keyword) throws JSONException {
         JSONObject newsData = new JSONObject(json);
         JSONArray articles = newsData.getJSONArray("articles");
         
@@ -50,7 +50,9 @@ public class NewsFetcher {
         for (int i = 0; i < articles.length(); i++) {
         	JSONObject article = articles.getJSONObject(i);
         	String headline = article.getString("title");
-        	headlineContents.append("	" + headline);
+        	if (headline.contains(keyword)) {
+        		headlineContents.append("	" + headline);
+        	}
         }
         
         String allHeadlines = headlineContents.toString();
