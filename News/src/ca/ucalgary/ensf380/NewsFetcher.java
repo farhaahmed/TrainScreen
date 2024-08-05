@@ -1,15 +1,18 @@
 package ca.ucalgary.ensf380;
 
 import java.io.BufferedReader;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class NewsFetcher {
-    private static final String API_KEY = "a84ec2ca21934fce8029829002e79212"; // Your API key
+    private static final String API_KEY = "a84ec2ca21934fce8029829002e79212"; //Our API key
     private static final String BASE_URL = "https://newsapi.org/v2/top-headlines?country=ca&apiKey=";
 
-    public String fetchNews() throws Exception {
+    public static String fetchNews() throws Exception {
         String completeUrl = BASE_URL + API_KEY;
         URL urlObject = new URL(completeUrl);
         HttpURLConnection urlConnection = (HttpURLConnection) urlObject.openConnection();
@@ -37,9 +40,20 @@ public class NewsFetcher {
     }
 
     // Method to parse the news data from the JSON response
-    private String parseNewsData(String json) {
-        // Implement the JSON parsing logic here
-        // For simplicity, we can return the raw JSON or you can use a library like org.json or Gson to parse it
-        return json;
+    private static String parseNewsData(String json) throws JSONException {
+        JSONObject newsData = new JSONObject(json);
+        JSONArray articles = newsData.getJSONArray("articles");
+        
+        
+        StringBuilder headlineContents = new StringBuilder();
+        
+        for (int i = 0; i < articles.length(); i++) {
+        	JSONObject article = articles.getJSONObject(i);
+        	String headline = article.getString("title");
+        	headlineContents.append("	" + headline);
+        }
+        
+        String allHeadlines = headlineContents.toString();
+        return allHeadlines;
     }
 }
