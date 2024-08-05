@@ -65,8 +65,11 @@ public class WeatherFetcher {
         String tempActualRegex = "[0-9]{2}(?=</span> )";
         String windRegex = "[0-9]{2}(?= km)";
         String rainRegex = "[0-9.]{3}(?= mm)";
+        String Regex404 = "404 UNKNOWN LOCATION:";
         
         //matchers for each field
+        Pattern Pattern404 = Pattern.compile(Regex404);
+        Matcher Matcher404 = Pattern404.matcher(html);
         Pattern conditionPattern = Pattern.compile(conditionRegex);
         Matcher conditionMatcher = conditionPattern.matcher(html);
         Pattern tempPlusPattern = Pattern.compile(tempPlusRegex);
@@ -78,7 +81,7 @@ public class WeatherFetcher {
         Pattern rainPattern = Pattern.compile(rainRegex);
         Matcher rainMatcher = rainPattern.matcher(html);
         
-        if (conditionMatcher.find() && tempPlusMatcher.find() && tempActualMatcher.find() && windMatcher.find() && rainMatcher.find()) {
+        if (!Matcher404.find() && conditionMatcher.find() && tempPlusMatcher.find() && tempActualMatcher.find() && windMatcher.find() && rainMatcher.find()) {
             // Extracting weather information using regex groups
             String condition = conditionMatcher.group();
             String temperature = tempPlusMatcher.group();
@@ -95,7 +98,7 @@ public class WeatherFetcher {
             
             return weatherData;
         } else {
-        	throw new IllegalArgumentException("No Weather Data Found for the given City");
+        	throw new IllegalArgumentException("No Weather Data found for the given City");
         }
     }
 }
