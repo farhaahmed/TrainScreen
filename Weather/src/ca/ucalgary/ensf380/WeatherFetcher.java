@@ -1,6 +1,7 @@
 package ca.ucalgary.ensf380;
 
 import java.util.regex.Pattern; // Import Pattern for regex
+import java.util.ArrayList;
 import java.util.regex.Matcher; // Import Matcher for regex
 import java.net.URL; // Import URL for handling URL connections
 import java.net.HttpURLConnection; // Import HttpURLConnection for handling HTTP connections
@@ -12,20 +13,12 @@ import java.nio.charset.StandardCharsets; // Import StandardCharsets for charact
 public class WeatherFetcher {
 
     // Declaring and initializing the base URL used for fetching weather data
-    private static final String BASE_URL = "http://wttr.in/";
+    private static final String BASE_URL = "https://wttr.in/";
 
     // Public method used to gain access to the website API information through URL connection
-    public static String fetchWeather(String cityName, String countryCode) throws Exception {
-
-        // If-Statement to check for and implement default value for country code if it is null or empty
-        if (countryCode == null || countryCode.isEmpty()) {
-            countryCode = ""; // If no country code, keep it empty
-        } else {
-            countryCode = "/" + URLEncoder.encode(countryCode, StandardCharsets.UTF_8.toString()); // Add the encoded country code to the URL
-        }
-
+    public static ArrayList<String> fetchWeather(String cityName, String countryCode) throws Exception {
         // Constructing the complete URL with encoded city and country information
-        String completeUrl = BASE_URL + URLEncoder.encode(cityName, StandardCharsets.UTF_8.toString()) + countryCode + "?format=%C+%t+%w+%p";
+        String completeUrl = BASE_URL + cityName + "," + countryCode;
 
         // Creating a URL object from the complete URL string
         URL urlObject = new URL(completeUrl);
@@ -33,6 +26,7 @@ public class WeatherFetcher {
         HttpURLConnection urlConnection = (HttpURLConnection) urlObject.openConnection();
         // Setting the request method to "GET"
         urlConnection.setRequestMethod("GET");
+        
 
         // Getting the response code from the HTTP request
         int responseCode = urlConnection.getResponseCode();
@@ -63,24 +57,45 @@ public class WeatherFetcher {
     }
 
     // Method to parse the weather data from the HTML response using regex and matcher
-    private static String parseWeatherData(String html) {
+    private static ArrayList<String> parseWeatherData(String html) {
         // Regex pattern to match the weather data in the HTML response
-        String regex = "(\\S+\\s+\\S+)\\s+(\\S+)\\s+(\\S+\\s+\\S+)\\s+(\\S+)";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(html);
-
-        if (matcher.find()) {
+    	ArrayList<String> weatherData = new ArrayList<>();
+        String conditionRegex = "(?<=<\\/span> )[ A-Za-z]+";
+        String tempPlusRegex = "(?<=\">)[+\\-0-9]{3}";
+        String tempActualRegex = "[0-9]{2}(?=</span> )";
+        String windRegex = "[0-9]{2}(?= km)";
+        String rainRegex = "[0-9.]{3}(?= mm)";
+        
+        //matchers for each field
+        Pattern conditionPattern = Pattern.compile(conditionRegex);
+        Matcher conditionMatcher = conditionPattern.matcher(html);
+        Pattern tempPlusPattern = Pattern.compile(tempPlusRegex);
+        Matcher tempPlusMatcher = tempPlusPattern.matcher(html);
+        Pattern tempActualPattern = Pattern.compile(tempActualRegex);
+        Matcher tempActualMatcher = tempActualPattern.matcher(html);
+        Pattern windPattern = Pattern.compile(windRegex);
+        Matcher windMatcher = windPattern.matcher(html);
+        Pattern rainPattern = Pattern.compile(rainRegex);
+        Matcher rainMatcher = rainPattern.matcher(html);
+        
+        if (conditionMatcher.find() && tempPlusMatcher.find() && tempActualMatcher.find() && windMatcher.find() && rainMatcher.find()) {
             // Extracting weather information using regex groups
-            String condition = matcher.group(1);
-            String temperature = matcher.group(2);
-            String wind = matcher.group(3);
-            String precipitation = matcher.group(4);
+            String condition = conditionMatcher.group();
+            String temperature = tempPlusMatcher.group();
+            String temperature_actual = tempActualMatcher.group()
+;           String wind = windMatcher.group();
+            String precipitation = rainMatcher.group();
 
             // Formatting and returning the extracted weather information
-            return String.format("Condition: %s, Temperature: %s, Wind: %s, Precipitation: %s", condition, temperature, wind, precipitation);
+            weatherData.add(condition);
+            weatherData.add(temperature);
+            weatherData.add(temperature_actual);
+            weatherData.add(wind);
+            weatherData.add(precipitation);
+            
+            return weatherData;
         } else {
-            // Returning a default message if no weather data is found
-            return "Weather data not found.";
+        	throw new IllegalArgumentException("No Weather Data Found for the given City");
         }
     }
 }
