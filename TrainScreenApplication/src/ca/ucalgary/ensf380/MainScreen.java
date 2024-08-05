@@ -56,15 +56,23 @@ public class MainScreen {
     		
     		//ad and map panel
     		JPanel adPanel = new JPanel();
-    		JLabel adLabel = new JLabel("Ad Placeholder");
-            adPanel.add(adLabel);
+    		JLabel adLabel = new JLabel("");
+    		
+    		ImageIcon adImage = new ImageIcon("Advertisements/CG_Ad_3.jpg"); //must initialize icon first
+    		Image scaledImage = adImage.getImage().getScaledInstance(460, 200, Image.SCALE_SMOOTH);
+    		adImage = new ImageIcon(scaledImage);
+    		
+    		adLabel.setIcon(adImage);
+    		adPanel.add(adLabel);
+    		
+            
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.gridwidth = 2;
             gbc.gridheight = 2;
             gbc.fill = GridBagConstraints.BOTH;
             gbc.weightx = 0.75;
-            gbc.weighty = 1.0;
+            gbc.weighty = 0.5;
             frame.add(adPanel, gbc);
             
             JPanel weatherPanel = new JPanel();
@@ -76,7 +84,7 @@ public class MainScreen {
             gbc.gridheight = 2;
             gbc.fill = GridBagConstraints.BOTH;
             gbc.weightx = 0.25;
-            gbc.weighty = 1.0;
+            gbc.weighty = 0.5;
             frame.add(weatherPanel, gbc);
 
             // Train Information
@@ -89,12 +97,12 @@ public class MainScreen {
             gbc.gridheight = 2;
             gbc.fill = GridBagConstraints.BOTH;
             gbc.weightx = 1.0;
-            gbc.weighty = 0.25;
+            gbc.weighty = 0.35;
             frame.add(trainPanel, gbc);
             
             //News Section
             JPanel newsPanel = new JPanel();
-            JLabel newsLabel = new JLabel("News: Example headline");
+            JLabel newsLabel = new JLabel("News Section");
             newsPanel.add(newsLabel);
             gbc.gridx = 0;
             gbc.gridy = 5;
