@@ -6,12 +6,17 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import ca.ucalgary.edu.ensf380.MyApp1;
 
 public class TrainDataFetcher {
-
-    public List<Train> fetchTrainData(String outputFolderPath) {
+	private static final String outputFolderPath = "./out";
+	
+    public static List<Train> fetchTrainData() {
         List<Train> trains = new ArrayList<>();
-        Path latestFile = getLatestCSVFile(outputFolderPath);
+        Path latestFile = getLatestCSVFile();
         if (latestFile == null) {
             System.out.println("No train position files found in the output folder.");
             return trains;
@@ -43,8 +48,8 @@ public class TrainDataFetcher {
         return trains;
     }
 
-    private Path getLatestCSVFile(String outputFolderPath) {
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(outputFolderPath), "Train_*.CSV")) {
+    private static Path getLatestCSVFile() {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Path.of(outputFolderPath), "Train_*.CSV")) {
             Path latestFile = null;
             for (Path entry : stream) {
                 if (latestFile == null || Files.getLastModifiedTime(entry).toMillis() > Files.getLastModifiedTime(latestFile).toMillis()) {
@@ -54,7 +59,29 @@ public class TrainDataFetcher {
             return latestFile;
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
+        
     }
+    
+    //testing method
+    public static void main(String[] args) {
+    	List<Train> trains = TrainDataFetcher.fetchTrainData();
+    	
+    	MyApp1.startSimulation();
+    	Timer timer = new Timer();
+    	TimerTask task = new TimerTask() {
+    		@Override
+    		public void run() {
+    			trains.clear();
+    			trains.addAll(TrainDataFetcher.fetchTrainData());
+    			System.out.println(trains.toArray());
+    		}
+    	};
+    	timer.scheduleAtFixedRate(task, 0, 10000);
+    	
+    	
+    	
+    }
+    
 }

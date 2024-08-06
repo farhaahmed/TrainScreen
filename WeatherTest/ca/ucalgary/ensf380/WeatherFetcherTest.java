@@ -21,7 +21,7 @@ public class WeatherFetcherTest {
 			WeatherFetcher.fetchWeather("NotAValidCity", "CA");
 			fail("Exception must be thrown before this point.");//if no exception thrown, then fail method is triggered.
 		} catch(Exception c) {
-			assertTrue("message must also be given saying'No Weather Data found for the given City'", c.getMessage().contains("No Weather Data found for the given City"));
+			assertTrue("message must also be given saying 'No Weather Data found for the given City'", c.getMessage().contains("Error! Cannot Fetch Weather Data: 404"));
 		}
 	}
 	

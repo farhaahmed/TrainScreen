@@ -33,7 +33,7 @@ import java.util.TimerTask;
  *
  */
 public class MyApp1 {
-	public static void main(String[] args) {
+	public static void startSimulation() {
         // Runs the simulator 
 		Process process = null;        
         try {
